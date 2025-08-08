@@ -1,9 +1,3 @@
-¡Claro que sí! Basado en todo lo que hemos construido, aquí tienes una propuesta de `README.md` profesional y completo para tu proyecto "Ant Simulator". Este README está diseñado para ser claro, atractivo y útil tanto para ti en el futuro como para cualquier otra persona que pueda ver tu código.
-
-Simplemente copia y pega este contenido en un archivo llamado `README.md` en la raíz de tu proyecto.
-
----
-
 # 🐜 Ant Simulator - Guía de Estudio para Licencias
 
 **Ant Simulator** es una aplicación móvil multiplataforma, desarrollada con **Kotlin Multiplatform (KMM)** y **Compose Multiplatform**, diseñada para ayudar a los usuarios a prepararse para los exámenes teóricos de diferentes tipos de licencias de conducir.
@@ -95,12 +89,6 @@ Las contribuciones son bienvenidas. Si encuentras un error o tienes una idea par
 
 ## 📄 Licencia
 
-Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
+Este proyecto está distribuido bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
 
-```
-MIT License
-
-Copyright (c) 2025 Luis Gómez
-
-... (texto completo de la licencia) ...
-```
+[LICENSE](LICENSE)
