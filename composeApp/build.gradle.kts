@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -35,6 +36,7 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.ktor.client.android)
             implementation(libs.koin.android)
+            implementation(libs.sqldelight.driver.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -61,13 +63,15 @@ kotlin {
             implementation(libs.composeIcons.evaIcons)
             implementation(libs.russhwolf.settings.multiplatform)
             implementation(libs.napier.logger)
+            implementation(compose.animation)
+            implementation(libs.sqldelight.coroutines.extensions)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
-//            implementation("com.russhwolf:multiplatform-settings-no-arg:1.3.0")
+            implementation(libs.sqldelight.driver.native)
         }
     }
 }
@@ -103,3 +107,10 @@ dependencies {
     debugImplementation(compose.uiTooling)
 }
 
+sqldelight {
+    databases {
+        create("AppDatabase") { // Dale un nombre a tu base de datos
+            packageName.set("com.luisdev.antsimulator.database") // Paquete donde se generará el código
+        }
+    }
+}

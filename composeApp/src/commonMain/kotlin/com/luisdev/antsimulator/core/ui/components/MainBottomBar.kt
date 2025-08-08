@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.luisdev.antsimulator.core.utils.getTheme
 import compose.icons.EvaIcons
 import compose.icons.evaicons.Fill
@@ -39,11 +38,9 @@ import org.koin.core.annotation.KoinExperimentalAPI
 @Composable
 fun MainBottomBar(
     navController: NavHostController,
-    mainViewModel: MainViewModel
+    mainViewModel: MainViewModel,
+    isHomeSelected: Boolean
 ) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-    val isHomeSelected = currentRoute == HomeRoute::class.qualifiedName
     val selectedTheme by mainViewModel.selectedTheme.collectAsState(null)
 
 

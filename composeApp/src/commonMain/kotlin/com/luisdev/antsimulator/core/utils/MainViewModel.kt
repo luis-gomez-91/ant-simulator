@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.luisdev.antsimulator.core.utils.Theme
 import com.luisdev.antsimulator.data.service.MainService
 import com.luisdev.antsimulator.features.home.data.LicenceResponse
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.itb.nominas.core.data.response.ErrorResponse
@@ -29,6 +30,20 @@ class MainViewModel(
 
     private val _licenceSelected = MutableStateFlow<LicenceResponse?>(null)
     val licenceSelected: StateFlow<LicenceResponse?> = _licenceSelected
+
+    private val _searchQuery = MutableStateFlow<String>("")
+    val searchQuery: StateFlow<String> = _searchQuery
+
+    private val _isStarred = MutableStateFlow<Boolean>(false)
+    val isStarred: StateFlow<Boolean> = _isStarred
+
+    fun setIsStarred(value: Boolean) {
+        _isStarred.value = value
+    }
+
+    fun setSearchQuery(query: String) {
+        _searchQuery.value = query
+    }
 
     fun setLicenteSelected(licence: LicenceResponse?) {
         _licenceSelected.value = licence

@@ -16,3 +16,8 @@ data class OptionsRoute(val licenceId: Int) : Screen {
     override val route: String
         get() = "options/$licenceId"
 }
+
+@Serializable
+object QuestionBankRoute : Screen {
+    override val route = "questionBank"
+}

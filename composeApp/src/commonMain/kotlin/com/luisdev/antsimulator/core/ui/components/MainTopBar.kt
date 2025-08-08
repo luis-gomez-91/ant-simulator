@@ -33,23 +33,38 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import compose.icons.EvaIcons
+import compose.icons.evaicons.Fill
 import compose.icons.evaicons.Outline
+import compose.icons.evaicons.fill.Close
+import compose.icons.evaicons.fill.Search
+import compose.icons.evaicons.fill.Star
+import compose.icons.evaicons.outline.ChevronLeft
 import compose.icons.evaicons.outline.Close
 import compose.icons.evaicons.outline.Menu
 import compose.icons.evaicons.outline.Search
+import compose.icons.evaicons.outline.Star
 import kotlinx.coroutines.launch
+import org.itb.nominas.core.navigation.HomeRoute
+import org.itb.nominas.core.navigation.QuestionBankRoute
 import org.itb.nominas.core.utils.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainTopBar(
-    mainViewModel: MainViewModel
+    mainViewModel: MainViewModel,
+    navHostController: NavHostController
 ) {
     val focusRequester = remember { FocusRequester() }
     var onSearch by remember { mutableStateOf(true) }
+    val onStarred by mainViewModel.isStarred.collectAsState(false)
     val title by mainViewModel.title.collectAsState(null)
-    val scope = rememberCoroutineScope()
+
+    val navBackStackEntry by navHostController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val isQuestionBankSelected = currentRoute == QuestionBankRoute::class.qualifiedName
 
     if (!onSearch) {
         LaunchedEffect(Unit) {
@@ -78,6 +93,7 @@ fun MainTopBar(
                                 value = searchQuery,
                                 onValueChange = { newQuery ->
                                     searchQuery = newQuery
+                                    mainViewModel.setSearchQuery(searchQuery)
                                 },
                                 textStyle = MaterialTheme.typography.bodyMedium,
                                 colors = TextFieldDefaults.colors(
@@ -89,7 +105,7 @@ fun MainTopBar(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .focusRequester(focusRequester),
-                                label = { Text("Buscar") },
+                                label = { Text("Buscar Pregunta") },
                                 singleLine = true,
                                 keyboardOptions = KeyboardOptions.Default.copy(
                                     imeAction = ImeAction.Search,
@@ -97,6 +113,7 @@ fun MainTopBar(
                                 ),
                                 keyboardActions = KeyboardActions(
                                     onSearch = {
+                                        mainViewModel.setSearchQuery(searchQuery)
                                     }
                                 )
                             )
@@ -117,28 +134,44 @@ fun MainTopBar(
             navigationIconContentColor = MaterialTheme.colorScheme.onSurface
         ),
         actions = {
-            AnimatedContent(targetState = onSearch) { isSearch ->
+            if (isQuestionBankSelected) {
+                AnimatedContent(targetState = onSearch) { isSearch ->
+                    IconButton(
+                        onClick = {
+                            onSearch = !onSearch
+                            if (onSearch) {
+                                mainViewModel.setSearchQuery("")
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = if (isSearch) EvaIcons.Outline.Search else EvaIcons.Fill.Close,
+                            contentDescription = if (isSearch) "Activar búsqueda" else "Desactivar búsqueda",
+                            tint = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                }
+
                 IconButton(
                     onClick = {
-                        onSearch = !onSearch
+                        mainViewModel.setIsStarred(!onStarred)
                     }
                 ) {
                     Icon(
-                        imageVector = if (isSearch) EvaIcons.Outline.Search else EvaIcons.Outline.Close,
-                        contentDescription = if (isSearch) "Activar búsqueda" else "Desactivar búsqueda",
-                        tint = MaterialTheme.colorScheme.secondary
+                        imageVector = if (onStarred) EvaIcons.Fill.Star else EvaIcons.Outline.Star,
+                        contentDescription = "Favoritos",
+                        tint = if (onStarred) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
                     )
                 }
             }
-
         },
         navigationIcon = {
             IconButton(
-                onClick = { }
+                onClick = { navHostController.popBackStack() }
             ) {
                 Icon(
-                    imageVector = EvaIcons.Outline.Menu,
-                    contentDescription = "Menú lateral",
+                    imageVector = EvaIcons.Outline.ChevronLeft,
+                    contentDescription = "Regresar",
                     tint = MaterialTheme.colorScheme.secondary
                 )
             }

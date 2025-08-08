@@ -1,0 +1,17 @@
+-- Favorites.sq
+
+CREATE TABLE Favorite (
+    question_id INTEGER NOT NULL PRIMARY KEY
+);
+
+selectAll:
+SELECT question_id FROM Favorite;
+
+insert:
+INSERT OR IGNORE INTO Favorite(question_id) VALUES (?);
+
+delete:
+DELETE FROM Favorite WHERE question_id = ?;
+
+isFavorite:
+SELECT EXISTS(SELECT 1 FROM Favorite WHERE question_id = ?);

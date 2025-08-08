@@ -32,8 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.luisdev.antsimulator.core.utils.Theme
 import com.luisdev.antsimulator.core.utils.getTheme
+import org.itb.nominas.core.navigation.HomeRoute
 import org.itb.nominas.core.utils.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,16 +48,24 @@ fun MainScaffold(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val showBottomSheetTheme by mainViewModel.bottomSheetTheme.collectAsState(false)
 
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val isHomeSelected = currentRoute == HomeRoute::class.qualifiedName
+
     Scaffold(
-//        topBar = { MainTopBar(mainViewModel) },
-        bottomBar = { MainBottomBar(navController, mainViewModel) }
+        topBar = {
+            if (!isHomeSelected) {
+                MainTopBar(mainViewModel, navController)
+            }
+        },
+        bottomBar = { MainBottomBar(navController, mainViewModel, isHomeSelected) }
     ) { innerPadding ->
         Surface(
             Modifier
                 .padding(innerPadding)
                 .background(color = MaterialTheme.colorScheme.tertiaryContainer)
         ) {
-            Column (
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(bottom = 4.dp)

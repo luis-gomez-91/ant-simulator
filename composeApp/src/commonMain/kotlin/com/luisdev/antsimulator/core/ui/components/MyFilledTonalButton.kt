@@ -33,7 +33,6 @@ fun MyFilledTonalButton(
 ) {
     FilledTonalButton(
         onClick = {
-            Napier.i("🎯 onClick de FilledTonalButton ejecutado", tag = "MyFilledTonalButton")
             onClickAction()
         },
         enabled = enabled,

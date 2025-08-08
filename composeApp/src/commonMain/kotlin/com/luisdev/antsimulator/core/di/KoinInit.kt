@@ -15,7 +15,9 @@ fun initKoin(
             networkModule,
             serviceModule,
             viewModelModule,
-            nativeModule
+            nativeModule,
+            databaseModule,
+            repositoryModule
         )
     }
 }

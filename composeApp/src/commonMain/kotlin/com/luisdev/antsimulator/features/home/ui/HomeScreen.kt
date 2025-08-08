@@ -1,7 +1,12 @@
 package com.luisdev.antsimulator.features.home.ui
 
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -33,8 +38,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
+import com.luisdev.antsimulator.core.ui.components.ErrorAlert
 import com.luisdev.antsimulator.core.ui.components.MyCard
-import com.luisdev.antsimulator.core.ui.components.MyErrorAlert
 import com.luisdev.antsimulator.core.ui.components.ShimmerLoadingAnimation
 import com.luisdev.antsimulator.features.home.data.LicenceResponse
 import compose.icons.EvaIcons
@@ -47,24 +52,29 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 
 
-@OptIn(KoinExperimentalAPI::class)
+@OptIn(KoinExperimentalAPI::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun HomeScreen(
     navHostController: NavHostController,
+    animatedContentScope: AnimatedContentScope,
+    sharedTransitionScope: SharedTransitionScope,
     homeViewModel: HomeViewModel = koinViewModel()
 ) {
+    homeViewModel.mainViewModel.setTitle(null)
     MainScaffold(
         navController = navHostController,
         mainViewModel = homeViewModel.mainViewModel,
-        content = { Screen(homeViewModel, navHostController) }
+        content = { Screen(homeViewModel, navHostController, animatedContentScope, sharedTransitionScope) }
     )
 }
 
-@OptIn(KoinExperimentalAPI::class)
+@OptIn(KoinExperimentalAPI::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun Screen(
     homeViewModel: HomeViewModel,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    animatedContentScope: AnimatedContentScope,
+    sharedTransitionScope: SharedTransitionScope
 ) {
     val data by homeViewModel.data.collectAsState(null)
     val error by homeViewModel.error.collectAsState(null)
@@ -90,109 +100,108 @@ fun Screen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(it) { licence ->
-                    LicenceItem(licence, navHostController, homeViewModel)
+                    LicenceItem(licence, navHostController, homeViewModel, animatedContentScope, sharedTransitionScope)
                 }
             }
         }
     }
 
-    error?.let {
-        MyErrorAlert(
-            titulo = "Error",
-            mensaje = it.message,
-            onDismiss = {
-                homeViewModel.clearError()
-                homeViewModel.clearData()
-            },
-            showAlert = true
-        )
-    }
-
-    mainError?.let {
-        MyErrorAlert(
-            titulo = "Error",
-            mensaje = it.message,
-            onDismiss = {
-                homeViewModel.mainViewModel.clearError()
-            },
-            showAlert = true
-        )
-    }
+    ErrorAlert(
+        error = error,
+        onDismiss = {
+            homeViewModel.clearError()
+            homeViewModel.clearData()
+        }
+    )
 }
 
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun LicenceItem(
     licence: LicenceResponse,
     navController: NavHostController,
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
+    animatedContentScope: AnimatedContentScope,
+    sharedTransitionScope: SharedTransitionScope
 ) {
     var expand by remember { mutableStateOf(false) }
 
-    MyCard (
-        modifier = Modifier
-            .fillMaxWidth()
-            .animateContentSize(),
-        onClick = {
-            homeViewModel.mainViewModel.setLicenteSelected(licence)
-            navController.navigate(OptionsRoute(licence.id)) {
-                launchSingleTop = true
-            }
-        }
-    ) {
-        Row (
+    with(sharedTransitionScope) {
+        MyCard (
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AsyncImage(
-                model = licence.image,
-                contentDescription = licence.name,
-                modifier = Modifier.width(40.dp)
-            )
-
-            Spacer(Modifier.width(16.dp))
-
-            Column (
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Row (
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Licencia tipo ${licence.name}",
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-
-                    IconButton(onClick = { expand = !expand }) {
-                        Icon(
-                            imageVector = if (expand) EvaIcons.Outline.ChevronUp else EvaIcons.Outline.ChevronDown,
-                            contentDescription = "Expandir o colapsar",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
+                .animateContentSize(),
+            onClick = {
+                homeViewModel.mainViewModel.setLicenteSelected(licence)
+                navController.navigate(OptionsRoute(licence.id)) {
+                    launchSingleTop = true
                 }
-
-                AnimatedVisibility(
-                    visible = expand,
-                    enter = fadeIn() + expandVertically(),
-                    exit = fadeOut() + shrinkVertically()
-                ) {
-                    Column {
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Text(
-                            text = licence.description,
-                            color = MaterialTheme.colorScheme.secondary,
-                            style = MaterialTheme.typography.bodySmall
+            }
+        ) {
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AsyncImage(
+                    model = licence.image,
+                    contentDescription = licence.name,
+                    modifier = Modifier
+                        .width(40.dp)
+                        .sharedElement(
+                            sharedContentState  = rememberSharedContentState(key = "image-${licence.id}"),
+                            animatedVisibilityScope = animatedContentScope,
+                            boundsTransform = { _, _ ->
+                                spring(stiffness = Spring.StiffnessMedium)
+                            }
                         )
+                )
+
+                Spacer(Modifier.width(16.dp))
+
+                Column (
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Row (
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Licencia tipo ${licence.name}",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+
+                        IconButton(onClick = { expand = !expand }) {
+                            Icon(
+                                imageVector = if (expand) EvaIcons.Outline.ChevronUp else EvaIcons.Outline.ChevronDown,
+                                contentDescription = "Expandir o colapsar",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+
+                    AnimatedVisibility(
+                        visible = expand,
+                        enter = fadeIn() + expandVertically(),
+                        exit = fadeOut() + shrinkVertically()
+                    ) {
+                        Column {
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Text(
+                                text = licence.description,
+                                color = MaterialTheme.colorScheme.secondary,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
                     }
                 }
             }
         }
     }
+
 }
