@@ -7,7 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
@@ -17,32 +17,31 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.luisdev.antsimulator.core.utils.getTheme
 import compose.icons.EvaIcons
 import compose.icons.evaicons.Fill
 import compose.icons.evaicons.Outline
 import compose.icons.evaicons.fill.Home
 import compose.icons.evaicons.outline.Home
 import com.luisdev.antsimulator.domain.BottomBarItem
-import compose.icons.evaicons.outline.Moon
 import org.itb.nominas.core.navigation.HomeRoute
-import org.itb.nominas.core.utils.MainViewModel
-import org.koin.core.annotation.KoinExperimentalAPI
+import com.luisdev.antsimulator.core.utils.MainViewModel
+import compose.icons.evaicons.outline.Settings
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, KoinExperimentalAPI::class)
+
 @Composable
 fun MainBottomBar(
     navController: NavHostController,
-    mainViewModel: MainViewModel,
-    isHomeSelected: Boolean
+    isHomeSelected: Boolean,
+    drawerState: DrawerState,
 ) {
-    val selectedTheme by mainViewModel.selectedTheme.collectAsState(null)
-
+    val scope = rememberCoroutineScope()
 
     val navigationIcons = listOf<BottomBarItem>(
         BottomBarItem(
@@ -54,9 +53,9 @@ fun MainBottomBar(
             isSelected = isHomeSelected
         ),
         BottomBarItem(
-            onclick = { mainViewModel.setBottomSheetTheme(true) },
-            label = "Tema",
-            icon = selectedTheme?.getTheme()?.icon ?: EvaIcons.Outline.Moon,
+            onclick = { scope.launch { drawerState.open() } },
+            label = "Configuraciones",
+            icon = EvaIcons.Outline.Settings,
             color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.labelSmall
         ),

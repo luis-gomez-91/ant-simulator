@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.itb.nominas.core.data.response.ErrorResponse
-import org.itb.nominas.core.utils.MainViewModel
+import com.luisdev.antsimulator.core.utils.MainViewModel
 
 class HomeViewModel(
     val mainViewModel: MainViewModel,

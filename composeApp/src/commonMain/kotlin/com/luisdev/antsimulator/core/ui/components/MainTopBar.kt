@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,7 +23,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,17 +37,12 @@ import compose.icons.EvaIcons
 import compose.icons.evaicons.Fill
 import compose.icons.evaicons.Outline
 import compose.icons.evaicons.fill.Close
-import compose.icons.evaicons.fill.Search
 import compose.icons.evaicons.fill.Star
 import compose.icons.evaicons.outline.ChevronLeft
-import compose.icons.evaicons.outline.Close
-import compose.icons.evaicons.outline.Menu
 import compose.icons.evaicons.outline.Search
 import compose.icons.evaicons.outline.Star
-import kotlinx.coroutines.launch
-import org.itb.nominas.core.navigation.HomeRoute
 import org.itb.nominas.core.navigation.QuestionBankRoute
-import org.itb.nominas.core.utils.MainViewModel
+import com.luisdev.antsimulator.core.utils.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

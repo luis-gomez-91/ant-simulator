@@ -1,13 +1,13 @@
 package com.luisdev.antsimulator.features.question_bank.data
 
+import com.luisdev.antsimulator.AppDatabase
 import com.luisdev.antsimulator.data.QuestionBankResult
 import com.luisdev.antsimulator.data.service.QuestiosBankService
-import com.luisdev.antsimulator.database.AppDatabase
 
 
 class QuestionBankRepository(
-    private val service: QuestiosBankService, // Sigue necesitando el servicio de red
-    private val database: AppDatabase      // Y ahora también la base de datos
+    private val service: QuestiosBankService,
+    private val database: AppDatabase
 ) {
     private val favoriteQueries = database.favoritesQueries
 

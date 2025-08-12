@@ -5,7 +5,7 @@ import com.luisdev.antsimulator.features.home.data.LicenceResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.itb.nominas.core.data.response.ErrorResponse
-import org.itb.nominas.core.utils.MainViewModel
+import com.luisdev.antsimulator.core.utils.MainViewModel
 
 
 class OptionsViewModel(
@@ -20,12 +20,4 @@ class OptionsViewModel(
 
     private val _data = MutableStateFlow<List<LicenceResponse>?>(null)
     val data: StateFlow<List<LicenceResponse>?> = _data
-
-    fun clearError() {
-        _error.value = null
-    }
-
-    fun clearData() {
-        _data.value = null
-    }
 }

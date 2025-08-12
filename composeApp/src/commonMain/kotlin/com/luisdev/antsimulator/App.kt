@@ -7,7 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.example.compose.AppTheme
-import org.itb.nominas.core.utils.MainViewModel
+import com.luisdev.antsimulator.core.utils.MainViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -19,9 +19,11 @@ import com.luisdev.antsimulator.core.navigation.NavigationWrapper
 fun App() {
     val mainViewModel: MainViewModel = koinViewModel()
     val themeSelect by mainViewModel.selectedTheme.collectAsState()
+    val selectedFontSize by mainViewModel.selectedFontSize.collectAsState()
 
     AppTheme (
-        themeSelect
+        theme = themeSelect,
+        fontSizeOption = selectedFontSize
     ) {
 
         Column(

@@ -1,13 +1,12 @@
 package com.luisdev.antsimulator.data.service
 
-import com.luisdev.antsimulator.data.HomeResult
 import com.luisdev.antsimulator.data.QuestionBankResult
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import org.itb.nominas.core.utils.URL_SERVER
+import com.luisdev.antsimulator.core.utils.URL_SERVER
 
 class QuestiosBankService(
     private val client: HttpClient

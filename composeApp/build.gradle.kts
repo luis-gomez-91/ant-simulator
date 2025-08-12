@@ -64,7 +64,11 @@ kotlin {
             implementation(libs.russhwolf.settings.multiplatform)
             implementation(libs.napier.logger)
             implementation(compose.animation)
+            implementation("app.cash.sqldelight:runtime:2.0.1")
             implementation(libs.sqldelight.coroutines.extensions)
+            implementation("dev.icerock.moko:mvvm-core:0.16.1") // O la última versión
+            implementation("dev.icerock.moko:mvvm-compose:0.16.1")
+            implementation(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -109,8 +113,8 @@ dependencies {
 
 sqldelight {
     databases {
-        create("AppDatabase") { // Dale un nombre a tu base de datos
-            packageName.set("com.luisdev.antsimulator.database") // Paquete donde se generará el código
+        create("AppDatabase") {
+            packageName.set("com.luisdev.antsimulator")
         }
     }
 }

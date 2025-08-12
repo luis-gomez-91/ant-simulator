@@ -1,0 +1,56 @@
+-- Representa un único intento de simulación.
+CREATE TABLE Simulation (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    date INTEGER NOT NULL, -- Fecha y hora del intento (timestamp)
+    score INTEGER NOT NULL,
+    total_questions INTEGER NOT NULL,
+    licence_id INTEGER NOT NULL
+);
+
+-- Representa la respuesta a una pregunta específica dentro de una simulación.
+CREATE TABLE SimulationAnswer (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    simulation_id INTEGER NOT NULL, -- Clave foránea que enlaza con la tabla Simulation
+    question_text TEXT NOT NULL,
+    -- Guardamos las opciones como un único string JSON. Es la forma más fácil
+    -- de almacenar una lista de objetos sin crear otra tabla.
+    choices_json TEXT NOT NULL,
+    user_choice_id INTEGER NOT NULL,
+    correct_choice_id INTEGER NOT NULL,
+    FOREIGN KEY (simulation_id) REFERENCES Simulation(id)
+);
+
+-- --- QUERIES ---
+
+-- Inserta una nueva simulación y devuelve el ID que se le ha asignado.
+-- Inserta una nueva simulación (sin RETURNING).
+insertSimulation:
+INSERT INTO Simulation(date, score, total_questions, licence_id)
+VALUES (?, ?, ?, ?);
+
+-- Obtiene el ID de la última fila insertada en esta conexión.
+lastInsertRowId:
+SELECT last_insert_rowid();
+
+-- Inserta una respuesta asociada a una simulación.
+insertAnswer:
+INSERT INTO SimulationAnswer(simulation_id, question_text, choices_json, user_choice_id, correct_choice_id)
+VALUES (?, ?, ?, ?, ?);
+
+-- Para una futura pantalla de historial:
+selectAllSimulations:
+SELECT * FROM Simulation ORDER BY date DESC;
+
+-- Obtiene los datos de una simulación específica por su ID.
+getSimulationById:
+SELECT * FROM Simulation WHERE id = ?;
+
+-- Para ver los detalles de una simulación específica (esta ya la tenías, está perfecta).
+getAnswersForSimulation:
+SELECT * FROM SimulationAnswer WHERE simulation_id = ?;
+
+selectSimulationsByLicence:
+SELECT *
+FROM Simulation
+WHERE licence_id = ?
+ORDER BY date DESC;

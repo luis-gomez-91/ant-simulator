@@ -19,6 +19,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -33,12 +34,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.luisdev.antsimulator.core.utils.FontSizeOption
 import com.luisdev.antsimulator.core.utils.Theme
 import com.luisdev.antsimulator.core.utils.getTheme
 import org.itb.nominas.core.navigation.HomeRoute
-import org.itb.nominas.core.utils.MainViewModel
+import com.luisdev.antsimulator.core.utils.MainViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun MainScaffold(
     navController: NavHostController,
@@ -47,36 +49,113 @@ fun MainScaffold(
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val showBottomSheetTheme by mainViewModel.bottomSheetTheme.collectAsState(false)
+    val showbottomSheetFontSize by mainViewModel.bottomSheetFontSize.collectAsState(false)
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val isHomeSelected = currentRoute == HomeRoute::class.qualifiedName
 
-    Scaffold(
-        topBar = {
-            if (!isHomeSelected) {
-                MainTopBar(mainViewModel, navController)
-            }
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            MyDrawerContent(
+                drawerState,
+                mainViewModel
+            )
         },
-        bottomBar = { MainBottomBar(navController, mainViewModel, isHomeSelected) }
-    ) { innerPadding ->
-        Surface(
-            Modifier
-                .padding(innerPadding)
-                .background(color = MaterialTheme.colorScheme.tertiaryContainer)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 4.dp)
-            ) {
-                content()
+        content = {
+            Scaffold(
+                topBar = {
+                    if (!isHomeSelected) {
+                        MainTopBar(mainViewModel, navController)
+                    }
+                },
+                bottomBar = { MainBottomBar(navController, isHomeSelected, drawerState) }
+            ) { innerPadding ->
+                Surface(
+                    Modifier
+                        .padding(innerPadding)
+                        .background(color = MaterialTheme.colorScheme.tertiaryContainer)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 4.dp)
+                    ) {
+                        content()
+                    }
+                }
+            }
+
+            if (showBottomSheetTheme) {
+                ThemeSettings(mainViewModel)
+            }
+
+            if (showbottomSheetFontSize) {
+                FontSizeSettings(mainViewModel)
             }
         }
-    }
+    )
+}
 
-    if (showBottomSheetTheme) {
-        ThemeSettings(mainViewModel)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FontSizeSettings (
+    mainViewModel: MainViewModel
+) {
+    val fontSize by mainViewModel.selectedFontSize.collectAsState()
+    val fontSizes = listOf(FontSizeOption.Pequeña, FontSizeOption.Mediana, FontSizeOption.Grande, FontSizeOption.ExtraGrande)
+
+    ModalBottomSheet(
+        onDismissRequest = { mainViewModel.setBottomSheetFontSize(false) }
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            item {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Seleccionar Tamaño de Fuente",
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider()
+            }
+
+            items(fontSizes) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .clickable { mainViewModel.setFontSize(it) },
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = it.name,
+                            style = if (fontSize == it) MaterialTheme.typography.titleMedium else MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+
+                    RadioButton(
+                        selected = fontSize == it,
+                        onClick = { mainViewModel.setFontSize(it) }
+                    )
+                }
+                HorizontalDivider()
+            }
+        }
+
     }
 }
 

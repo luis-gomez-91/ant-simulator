@@ -42,7 +42,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -160,9 +159,6 @@ fun Screen(
                         FullScreenImageTransition(
                             imageUrl = question.image!!,
                             onDismiss = { selectedQuestion = null },
-                            animatedContentScope = animatedContentScope,
-                            sharedTransitionScope = sharedTransitionScope,
-                            id = question.id
                         )
                     }
                 }
@@ -216,10 +212,10 @@ fun QuestionItem(
                             AsyncImage(
                                 model = it,
                                 contentDescription = "Question image",
-                                contentScale = ContentScale.Crop,
+                                contentScale = ContentScale.Fit,
                                 modifier = Modifier
-                                    .size(80.dp)
-                                    .clip(RoundedCornerShape(8.dp))
+                                    .width(80.dp)
+                                    .clip(MaterialTheme.shapes.small)
                                     .clickable { onImageClick(question) }
                                     .sharedElement(
                                         sharedContentState  = rememberSharedContentState(key = "image-${question.id}"),
@@ -277,43 +273,30 @@ fun QuestionItem(
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun FullScreenImageTransition(
     imageUrl: String,
-    onDismiss: () -> Unit,
-    animatedContentScope: AnimatedContentScope,
-    sharedTransitionScope: SharedTransitionScope,
-    id: Int
+    onDismiss: () -> Unit
 ) {
-    with(sharedTransitionScope) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+            .clickable { onDismiss() },
+        contentAlignment = Alignment.Center
+    ) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.8f))
-                .clickable { onDismiss() },
-            contentAlignment = Alignment.Center
+                .fillMaxWidth(0.9f)
+                .aspectRatio(1f)
+                .clip(RoundedCornerShape(16.dp))
         ) {
-            Box(
-                modifier = Modifier
-//                    .sharedElement(
-//                        sharedContentState = rememberSharedContentState(key = "image-$id"),
-//                        animatedVisibilityScope = animatedContentScope,
-//                        boundsTransform = { _, _ ->
-//                            spring(stiffness = Spring.StiffnessMedium)
-//                        }
-//                    )
-                    .fillMaxWidth(0.9f)
-                    .aspectRatio(1f)
-                    .clip(RoundedCornerShape(16.dp))
-            ) {
-                AsyncImage(
-                    model = imageUrl,
-                    contentDescription = "Expanded image",
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = "Expanded image",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 }

@@ -21,3 +21,19 @@ data class OptionsRoute(val licenceId: Int) : Screen {
 object QuestionBankRoute : Screen {
     override val route = "questionBank"
 }
+
+@Serializable
+object SimulatorRoute : Screen {
+    override val route = "simulator"
+}
+
+@Serializable
+data class ResultRoute(val simulationId: Long) : Screen {
+    override val route: String
+        get() = "result/$simulationId"
+}
+
+@Serializable
+object HistoryRoute : Screen {
+    override val route = "history"
+}

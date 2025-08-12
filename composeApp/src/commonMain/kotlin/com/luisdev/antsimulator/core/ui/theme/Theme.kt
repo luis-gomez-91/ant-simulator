@@ -8,8 +8,10 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import com.luisdev.antsimulator.core.utils.FontSizeOption
 import com.luisdev.marknotes.core.ui.theme.getTypography
 import com.luisdev.antsimulator.core.utils.Theme
+
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -254,6 +256,7 @@ val unspecified_scheme = ColorFamily(
 @Composable
 fun AppTheme(
     theme: Theme,
+    fontSizeOption: FontSizeOption,
     content: @Composable () -> Unit
 ) {
     val darkTheme = when (theme) {
@@ -262,9 +265,10 @@ fun AppTheme(
         Theme.SystemDefault -> isSystemInDarkTheme()
     }
 
+
     MaterialTheme(
         colorScheme = if (darkTheme) darkScheme else lightScheme,
-        typography = getTypography(),
+        typography = getTypography(fontSizeOption),
         shapes = Shapes(),
         content = content
     )

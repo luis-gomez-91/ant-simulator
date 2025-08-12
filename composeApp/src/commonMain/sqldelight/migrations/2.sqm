@@ -1,0 +1,1 @@
+ALTER TABLE Simulation ADD COLUMN licence_id TEXT;

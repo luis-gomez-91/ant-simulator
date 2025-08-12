@@ -1,7 +1,7 @@
 package com.luisdev.antsimulator.core.di
 
 import com.luisdev.antsimulator.core.platform.DatabaseDriverFactory
-import com.luisdev.antsimulator.database.AppDatabase
+import com.luisdev.antsimulator.AppDatabase
 import org.koin.dsl.module
 
 val databaseModule = module {

@@ -40,7 +40,9 @@ import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import org.itb.nominas.core.navigation.HistoryRoute
 import org.itb.nominas.core.navigation.QuestionBankRoute
+import org.itb.nominas.core.navigation.SimulatorRoute
 
 @OptIn(KoinExperimentalAPI::class, ExperimentalSharedTransitionApi::class)
 @Composable
@@ -74,24 +76,24 @@ fun Screen(
     licenceSelected?.let { licence ->
         val options = listOf<OptionButtomItem>(
             OptionButtomItem(
-                text = "Realizar Simulacro",
+                text = "Iniciar Simulador",
                 icon = EvaIcons.Outline.BookOpen,
-                onclick = {  }
+                onclick = { navHostController.navigate(SimulatorRoute) }
             ),
             OptionButtomItem(
-                text = "Ver Cuestionario",
+                text = "Banco de Preguntas",
                 icon = EvaIcons.Outline.FileText,
                 onclick = { navHostController.navigate(QuestionBankRoute) }
             ),
             OptionButtomItem(
-                text = "Descargar Cuestionario",
+                text = "Descargar PDF",
                 icon = EvaIcons.Outline.Download,
                 onclick = { optionsViewModel.mainViewModel.urlOpener.openURL(licence.question_bank) }
             ),
             OptionButtomItem(
-                text = "Mi Historial",
+                text = "Historial",
                 icon = EvaIcons.Outline.Car,
-                onclick = {  }
+                onclick = { navHostController.navigate(HistoryRoute) }
             ),
         )
 

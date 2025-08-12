@@ -1,10 +1,7 @@
-package org.itb.nominas.core.utils
+package com.luisdev.antsimulator.core.utils
 
 import androidx.lifecycle.ViewModel
-import com.luisdev.antsimulator.core.utils.Theme
-import com.luisdev.antsimulator.data.service.MainService
 import com.luisdev.antsimulator.features.home.data.LicenceResponse
-import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.itb.nominas.core.data.response.ErrorResponse
@@ -12,7 +9,6 @@ import org.itb.nominas.core.platform.URLOpener
 
 
 class MainViewModel(
-    val service: MainService,
     val urlOpener: URLOpener,
 ): ViewModel() {
 
@@ -62,9 +58,18 @@ class MainViewModel(
         _title.value = newValue
     }
 
-    fun setError(newValue: String) {
-        _error.value = ErrorResponse(code = "error", message = newValue)
+    private val _selectedFontSize = MutableStateFlow(AppSettings.getFontSize())
+    val selectedFontSize: StateFlow<FontSizeOption> = _selectedFontSize
+
+    fun setFontSize(newValue: FontSizeOption) {
+        _selectedFontSize.value = newValue
+        AppSettings.setFontSize(newValue)
     }
 
-    fun clearError() { _error.value = null }
+    private val _bottomSheetFontSize = MutableStateFlow<Boolean>(false)
+    val bottomSheetFontSize: StateFlow<Boolean> = _bottomSheetFontSize
+
+    fun setBottomSheetFontSize(newValue: Boolean) {
+        _bottomSheetFontSize.value = newValue
+    }
 }
