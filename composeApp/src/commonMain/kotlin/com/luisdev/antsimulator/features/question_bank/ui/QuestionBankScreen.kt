@@ -45,6 +45,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import app.lexilabs.basic.ads.DependsOnGoogleMobileAds
+import app.lexilabs.basic.ads.composable.BannerAd
 import coil3.compose.AsyncImage
 import com.luisdev.antsimulator.core.ui.components.ErrorAlert
 import com.luisdev.antsimulator.core.ui.components.ShimmerLoadingAnimation
@@ -81,7 +83,9 @@ fun QuestionBankScreen(
     )
 }
 
-@OptIn(KoinExperimentalAPI::class, ExperimentalSharedTransitionApi::class)
+@OptIn(KoinExperimentalAPI::class, ExperimentalSharedTransitionApi::class,
+    DependsOnGoogleMobileAds::class
+)
 @Composable
 fun Screen(
     quesionBankViewModel: QuestionBankViewModel,
@@ -132,38 +136,45 @@ fun Screen(
     } else {
         filteredQuestions?.let { questions ->
             Box(modifier = Modifier.fillMaxSize()) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                Column (
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    items(questions) { question ->
-                        QuestionItem(
-                            questionBankViewModel = quesionBankViewModel,
-                            question = question,
-                            onImageClick = { selectedQuestion = question },
-                            animatedContentScope = animatedContentScope,
-                            sharedTransitionScope = sharedTransitionScope
-                        )
+                    LazyColumn(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(questions) { question ->
+                            QuestionItem(
+                                questionBankViewModel = quesionBankViewModel,
+                                question = question,
+                                onImageClick = { selectedQuestion = question },
+                                animatedContentScope = animatedContentScope,
+                                sharedTransitionScope = sharedTransitionScope
+                            )
+                        }
                     }
-                }
 
-                AnimatedVisibility(
-                    visible = selectedQuestion != null,
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
-                    // El ?.let previene el crash durante la animación de salida.
-                    selectedQuestion?.let { question ->
-                        FullScreenImageTransition(
-                            imageUrl = question.image!!,
-                            onDismiss = { selectedQuestion = null },
-                        )
+                    AnimatedVisibility(
+                        visible = selectedQuestion != null,
+                        enter = fadeIn(),
+                        exit = fadeOut()
+                    ) {
+                        // El ?.let previene el crash durante la animación de salida.
+                        selectedQuestion?.let { question ->
+                            FullScreenImageTransition(
+                                imageUrl = question.image!!,
+                                onDismiss = { selectedQuestion = null },
+                            )
+                        }
                     }
+
+                    Spacer(Modifier.height(4.dp))
+                    BannerAd()
                 }
             }
-
         }
     }
 

@@ -41,6 +41,7 @@ import com.luisdev.antsimulator.domain.MainDrawerItem
 import compose.icons.EvaIcons
 import compose.icons.evaicons.Outline
 import compose.icons.evaicons.outline.ChevronRight
+import compose.icons.evaicons.outline.Close
 import compose.icons.evaicons.outline.Moon
 import compose.icons.evaicons.outline.Text
 import kotlinx.coroutines.launch
@@ -58,6 +59,7 @@ fun MyDrawerContent(
     val items = buildList {
         add(MainDrawerItem("Tema", selectedTheme?.getTheme()?.icon ?: EvaIcons.Outline.Moon) { mainViewModel.setBottomSheetTheme(true) })
         add(MainDrawerItem("Tamaño de letra", EvaIcons.Outline.Text) { mainViewModel.setBottomSheetFontSize(true) })
+        add(MainDrawerItem("Quitar anuncios", EvaIcons.Outline.Close) {  })
     }
 
     ModalDrawerSheet(

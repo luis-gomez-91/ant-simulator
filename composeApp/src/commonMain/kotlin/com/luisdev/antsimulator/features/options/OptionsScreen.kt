@@ -40,6 +40,9 @@ import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.layout.Column
+import app.lexilabs.basic.ads.DependsOnGoogleMobileAds
+import app.lexilabs.basic.ads.composable.BannerAd
 import org.itb.nominas.core.navigation.HistoryRoute
 import org.itb.nominas.core.navigation.QuestionBankRoute
 import org.itb.nominas.core.navigation.SimulatorRoute
@@ -63,7 +66,9 @@ fun OptionsScreen(
 }
 
 
-@OptIn(KoinExperimentalAPI::class, ExperimentalSharedTransitionApi::class)
+@OptIn(KoinExperimentalAPI::class, ExperimentalSharedTransitionApi::class,
+    DependsOnGoogleMobileAds::class
+)
 @Composable
 fun Screen(
     navHostController: NavHostController,
@@ -98,88 +103,97 @@ fun Screen(
         )
 
         with(sharedTransitionScope) {
-            LazyColumn (
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+            Column (
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                item {
-                    AsyncImage(
-                        model = licence.image,
-                        contentDescription = licence.name,
-                        modifier = Modifier
-                            .width(80.dp)
-                            .sharedElement(
-                                sharedContentState  = rememberSharedContentState(key = "image-${licence.id}"),
-                                animatedVisibilityScope = animatedContentScope,
-                                boundsTransform = { _, _ ->
-                                    spring(stiffness = Spring.StiffnessMedium)
-                                }
-                            )
-                    )
+                LazyColumn (
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    item {
+                        AsyncImage(
+                            model = licence.image,
+                            contentDescription = licence.name,
+                            modifier = Modifier
+                                .width(80.dp)
+                                .sharedElement(
+                                    sharedContentState  = rememberSharedContentState(key = "image-${licence.id}"),
+                                    animatedVisibilityScope = animatedContentScope,
+                                    boundsTransform = { _, _ ->
+                                        spring(stiffness = Spring.StiffnessMedium)
+                                    }
+                                )
+                        )
 
-                    Spacer(Modifier.height(8.dp))
+                        Spacer(Modifier.height(8.dp))
 
-                    Text(
-                        text = "Licencia tipo ${licence.name}",
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-
-                    Spacer(Modifier.height(8.dp))
-
-                    Text(
-                        text = licence.description,
-                        color = MaterialTheme.colorScheme.secondary,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.width(300.dp)
-                    )
-
-                    Spacer(Modifier.height(32.dp))
-                }
-
-                items(options) { option ->
-                    FilledTonalButton(
-                        onClick = {
-                            option.onclick()
-                        },
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.primary
-                        ),
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Row (
+                        Text(
+                            text = "Licencia tipo ${licence.name}",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Icon(
-                                imageVector = option.icon,
-                                contentDescription = option.text,
-                                modifier = Modifier.size(24.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
+                            textAlign = TextAlign.Center
+                        )
 
+                        Spacer(Modifier.height(8.dp))
+
+                        Text(
+                            text = licence.description,
+                            color = MaterialTheme.colorScheme.secondary,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.width(300.dp)
+                        )
+
+                        Spacer(Modifier.height(32.dp))
+                    }
+
+                    items(options) { option ->
+                        FilledTonalButton(
+                            onClick = {
+                                option.onclick()
+                            },
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.primary
+                            ),
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
                             Row (
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Center
-                            ){
-                                Text(
-                                    text = option.text,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.primary
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Icon(
+                                    imageVector = option.icon,
+                                    contentDescription = option.text,
+                                    modifier = Modifier.size(24.dp),
+                                    tint = MaterialTheme.colorScheme.primary
                                 )
+
+                                Row (
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center
+                                ){
+                                    Text(
+                                        text = option.text,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(4.dp))
                             }
-                            Spacer(modifier = Modifier.width(4.dp))
                         }
+                        Spacer(Modifier.height(8.dp))
                     }
-                    Spacer(Modifier.height(8.dp))
                 }
+
+                Spacer(Modifier.height(4.dp))
+                BannerAd()
             }
+
         }
 
     }

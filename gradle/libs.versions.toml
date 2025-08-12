@@ -22,7 +22,12 @@ navigation-compose = "2.9.0-beta01"
 koin = "3.6.0-Beta4"
 koinCompose = "1.2.0-Beta4"
 sqlDelight = "2.0.2"
-kotlinxDatetime = "0.6.0"
+kotlinxDatetime = "0.6.2"
+googlePlayServicesAds = "24.5.0"
+androidUmp = "3.2.0"
+basicAds = "0.2.7"
+purchases-kmp = "2.1.0+16.2.0"
+#https://revenuecat.github.io/codelab/kmp/codelab-3-kmp-sdk/index.html#1
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -58,6 +63,11 @@ sqldelight-driver-android = { module = "app.cash.sqldelight:android-driver", ver
 sqldelight-driver-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
 sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+google-playServices-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "googlePlayServicesAds"} #Solo para android
+android-ump = { module = "com.google.android.ump:user-messaging-platform", version.ref = "androidUmp" } #Solo para android
+basic-ads = { module = "app.lexilabs.basic:basic-ads", version.ref = "basicAds"}
+purchases-core = { module = "com.revenuecat.purchases:purchases-kmp-core", version.ref = "purchases-kmp" }
+purchases-ui = { module = "com.revenuecat.purchases:purchases-kmp-ui", version.ref = "purchases-kmp" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

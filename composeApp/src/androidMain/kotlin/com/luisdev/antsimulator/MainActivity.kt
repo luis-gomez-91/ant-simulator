@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.android.gms.ads.MobileAds
 import org.koin.compose.getKoin
 
 class MainActivity : ComponentActivity() {
@@ -13,8 +14,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
+        MobileAds.initialize(this) {}
+
         setContent {
-            App()
+            App(this)
         }
     }
 }

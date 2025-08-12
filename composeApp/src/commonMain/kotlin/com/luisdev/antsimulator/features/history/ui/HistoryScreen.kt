@@ -21,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import app.lexilabs.basic.ads.DependsOnGoogleMobileAds
+import app.lexilabs.basic.ads.composable.BannerAd
 import com.luisdev.antsimulator.core.ui.components.MyCard
 import com.luisdev.antsimulator.core.ui.components.ShimmerLoadingAnimation
 import com.luisdev.antsimulator.features.history.domain.HistoryEntry
@@ -57,6 +59,7 @@ fun HistoryScreen(
     )
 }
 
+@OptIn(DependsOnGoogleMobileAds::class)
 @Composable
 private fun TestHistoryContent(
     testHistoryViewModel: HistoryViewModel,
@@ -66,20 +69,23 @@ private fun TestHistoryContent(
     val isLoading by testHistoryViewModel.isLoading.collectAsState()
     val error by testHistoryViewModel.error.collectAsState()
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
+                .weight(1f)
+                .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             when {
                 isLoading -> {
                     ShimmerLoadingAnimation(rowNumber = 5)
                 }
-
                 testHistory.isEmpty() -> {
                     Column(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxWidth().weight(1f),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -97,10 +103,10 @@ private fun TestHistoryContent(
                         )
                     }
                 }
-
                 else -> {
                     LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.fillMaxSize()
                     ) {
                         items(testHistory) { testEntry ->
                             TestHistoryItem(
@@ -113,7 +119,12 @@ private fun TestHistoryContent(
                 }
             }
         }
+
+        Spacer(Modifier.height(4.dp))
+
+        BannerAd()
     }
+
 }
 
 @Composable

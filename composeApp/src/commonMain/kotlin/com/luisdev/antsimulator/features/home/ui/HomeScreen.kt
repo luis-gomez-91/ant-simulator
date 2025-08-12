@@ -37,6 +37,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import app.lexilabs.basic.ads.DependsOnGoogleMobileAds
+import app.lexilabs.basic.ads.composable.BannerAd
 import coil3.compose.AsyncImage
 import com.luisdev.antsimulator.core.ui.components.ErrorAlert
 import com.luisdev.antsimulator.core.ui.components.MyCard
@@ -68,7 +70,9 @@ fun HomeScreen(
     )
 }
 
-@OptIn(KoinExperimentalAPI::class, ExperimentalSharedTransitionApi::class)
+@OptIn(KoinExperimentalAPI::class, ExperimentalSharedTransitionApi::class,
+    DependsOnGoogleMobileAds::class
+)
 @Composable
 fun Screen(
     homeViewModel: HomeViewModel,
@@ -78,7 +82,6 @@ fun Screen(
 ) {
     val data by homeViewModel.data.collectAsState(null)
     val error by homeViewModel.error.collectAsState(null)
-    val mainError by homeViewModel.mainViewModel.error.collectAsState(null)
     val isLoading by homeViewModel.isLoading.collectAsState(false)
 
     LaunchedEffect(Unit) {
@@ -93,16 +96,25 @@ fun Screen(
         }
     } else {
         data?.let {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+            Column (
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                items(it) { licence ->
-                    LicenceItem(licence, navHostController, homeViewModel, animatedContentScope, sharedTransitionScope)
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(it) { licence ->
+                        LicenceItem(licence, navHostController, homeViewModel, animatedContentScope, sharedTransitionScope)
+                    }
                 }
+
+                Spacer(Modifier.height(4.dp))
+                BannerAd()
             }
+
         }
     }
 

@@ -13,6 +13,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import app.lexilabs.basic.ads.DependsOnGoogleMobileAds
+import app.lexilabs.basic.ads.composable.BannerAd
 import com.luisdev.antsimulator.core.ui.components.MyCard
 import com.luisdev.antsimulator.core.ui.components.MyFilledTonalButton
 import com.luisdev.antsimulator.database.SimulationAnswer
@@ -28,7 +30,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.parameter.parametersOf
 
-@OptIn(KoinExperimentalAPI::class)
+@OptIn(KoinExperimentalAPI::class, DependsOnGoogleMobileAds::class)
 @Composable
 fun ResultScreen(
     simulationId: Long,
@@ -39,17 +41,22 @@ fun ResultScreen(
 
     Scaffold(
         bottomBar = {
-            BottomBar(
-                onNavigateHome = {
-                    navHostController.navigate(HomeRoute) {
-                        popUpTo(0) { inclusive = true }
+            Column (
+                modifier = Modifier.padding(top = 4.dp)
+            ) {
+                BannerAd()
+                BottomBar(
+                    onNavigateHome = {
+                        navHostController.navigate(HomeRoute) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }, onNavigateSimulator = {
+                        navHostController.navigate(SimulatorRoute) {
+                            popUpTo(0) { inclusive = true }
+                        }
                     }
-                }, onNavigateSimulator = {
-                    navHostController.navigate(SimulatorRoute) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                }
-            )
+                )
+            }
         }
     ) { innerPadding ->
         Column(
@@ -106,7 +113,7 @@ private fun BottomBar(
     onNavigateSimulator: () -> Unit
 ) {
     Surface(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 4.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
         color = MaterialTheme.colorScheme.surface
     ) {
         Row (
@@ -173,7 +180,7 @@ private fun AnswerDetailCard(answer: SimulationAnswer) {
             Row(verticalAlignment = Alignment.Top) {
                 Text(
                     text = answer.question_text,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f),
                     color = MaterialTheme.colorScheme.secondary
@@ -188,16 +195,16 @@ private fun AnswerDetailCard(answer: SimulationAnswer) {
             Spacer(Modifier.height(12.dp))
             Text(
                 text = "Tu respuesta: $userChoiceText",
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             if (!wasCorrect) {
                 Spacer(Modifier.height(4.dp))
                 Text(
                     "Respuesta correcta: $correctChoiceText",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                 )
             }
         }

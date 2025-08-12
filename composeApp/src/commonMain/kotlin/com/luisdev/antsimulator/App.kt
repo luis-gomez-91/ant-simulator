@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import app.lexilabs.basic.ads.BasicAds
+import app.lexilabs.basic.ads.DependsOnGoogleMobileAds
 import com.example.compose.AppTheme
 import com.luisdev.antsimulator.core.utils.MainViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -13,10 +15,12 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import com.luisdev.antsimulator.core.navigation.NavigationWrapper
 
-@OptIn(KoinExperimentalAPI::class)
+@OptIn(KoinExperimentalAPI::class, DependsOnGoogleMobileAds::class)
 @Composable
 @Preview
-fun App() {
+fun App(activity: Any?) {
+    BasicAds.initialize(activity)
+
     val mainViewModel: MainViewModel = koinViewModel()
     val themeSelect by mainViewModel.selectedTheme.collectAsState()
     val selectedFontSize by mainViewModel.selectedFontSize.collectAsState()
@@ -31,7 +35,7 @@ fun App() {
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            NavigationWrapper()
+            NavigationWrapper(activity)
         }
     }
 }

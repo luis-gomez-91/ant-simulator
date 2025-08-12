@@ -37,6 +37,8 @@ kotlin {
             implementation(libs.ktor.client.android)
             implementation(libs.koin.android)
             implementation(libs.sqldelight.driver.android)
+            implementation(libs.google.playServices.ads)
+            implementation(libs.android.ump)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -69,6 +71,9 @@ kotlin {
             implementation("dev.icerock.moko:mvvm-core:0.16.1") // O la última versión
             implementation("dev.icerock.moko:mvvm-compose:0.16.1")
             implementation(libs.kotlinx.datetime)
+            implementation(libs.basic.ads)
+            implementation(libs.purchases.core)
+            implementation(libs.purchases.ui)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -76,6 +81,12 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
             implementation(libs.sqldelight.driver.native)
+        }
+
+        named { it.lowercase().startsWith("ios") }.configureEach {
+            languageSettings {
+                optIn("kotlinx.cinterop.ExperimentalForeignApi")
+            }
         }
     }
 }

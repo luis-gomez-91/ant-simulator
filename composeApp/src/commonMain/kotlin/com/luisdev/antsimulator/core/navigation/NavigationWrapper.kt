@@ -22,7 +22,7 @@ import org.itb.nominas.core.navigation.SimulatorRoute
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun NavigationWrapper() {
+fun NavigationWrapper(activity: Any?) {
     val navController = rememberNavController()
 
     SharedTransitionLayout {
@@ -49,7 +49,8 @@ fun NavigationWrapper() {
 
             composable<SimulatorRoute> {
                 SimulatorScreen(
-                    navHostController = navController
+                    navHostController = navController,
+                    activity = activity
                 )
             }
 

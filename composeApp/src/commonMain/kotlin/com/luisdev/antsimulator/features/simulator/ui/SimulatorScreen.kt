@@ -36,6 +36,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import app.lexilabs.basic.ads.AdState
+import app.lexilabs.basic.ads.DependsOnGoogleMobileAds
+import app.lexilabs.basic.ads.composable.InterstitialAd
+import app.lexilabs.basic.ads.composable.rememberInterstitialAd
 import coil3.compose.AsyncImage
 import com.luisdev.antsimulator.core.ui.components.ErrorAlert
 import com.luisdev.antsimulator.core.ui.components.MyCard
@@ -58,7 +62,8 @@ import org.koin.core.annotation.KoinExperimentalAPI
 @Composable
 fun SimulatorScreen(
     navHostController: NavHostController,
-    simulatorViewModel: SimulatorViewModel = koinViewModel()
+    simulatorViewModel: SimulatorViewModel = koinViewModel(),
+    activity: Any?
 ) {
     MainScaffold(
         navController = navHostController,
@@ -67,21 +72,27 @@ fun SimulatorScreen(
             Screen(
                 simulatorViewModel,
                 navHostController,
+                activity
             )
         }
     )
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class, DependsOnGoogleMobileAds::class)
 @Composable
 fun Screen(
     simulatorViewModel: SimulatorViewModel,
     navController: NavHostController,
+    activity: Any?
 ) {
     // Observa el único estado desde el ViewModel
     val uiState by simulatorViewModel.uiState.collectAsState()
     val licence by simulatorViewModel.mainViewModel.licenceSelected.collectAsState(null)
     var selectedQuestion by remember { mutableStateOf<QuestionBankResponse?>(null) }
+
+    val interstitialAd by rememberInterstitialAd(activity)
+    var showInterstitialAd by remember { mutableStateOf(false) }
+    var navigateAfterAd by remember { mutableStateOf(false) }
 
     licence?.let {
         simulatorViewModel.mainViewModel.setTitle("Licencia tipo ${it.name}")
@@ -150,8 +161,10 @@ fun Screen(
 
                 MyFilledTonalButton(
                     text = "Finalizar",
-                    enabled = uiState.allQuestionsAnswered && !uiState.isFinished,
-                    onClickAction = {simulatorViewModel.finalizeSimulationManually()},
+//                    enabled = uiState.allQuestionsAnswered && !uiState.isFinished,
+//                    onClickAction = {simulatorViewModel.finalizeSimulationManually()},
+                    onClickAction = { showInterstitialAd = true },
+                    enabled = interstitialAd.state == AdState.READY,
                     modifier = Modifier.fillMaxWidth().weight(1f),
                     textStyle = MaterialTheme.typography.titleLarge
                 )
@@ -182,6 +195,21 @@ fun Screen(
 
     uiState.error?.let {
         ErrorAlert(error = it, onDismiss = { simulatorViewModel.clearError() })
+    }
+
+    if (navigateAfterAd) {
+        LaunchedEffect(Unit) {
+            navController.navigate(ResultRoute(simulationId = 1)) {
+                popUpTo(SimulatorRoute.route) { inclusive = true }
+            }
+        }
+    }
+
+    if (showInterstitialAd && interstitialAd.state == AdState.READY) {
+        InterstitialAd(interstitialAd, onDismissed = {
+            showInterstitialAd = false
+            navigateAfterAd = true
+        })
     }
 }
 
