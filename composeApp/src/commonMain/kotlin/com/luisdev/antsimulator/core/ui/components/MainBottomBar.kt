@@ -17,12 +17,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.luisdev.antsimulator.core.ui.components.AboutBottomSheet
+import com.luisdev.antsimulator.core.utils.MainViewModel
 import compose.icons.EvaIcons
 import compose.icons.evaicons.Fill
 import compose.icons.evaicons.Outline
@@ -30,7 +35,7 @@ import compose.icons.evaicons.fill.Home
 import compose.icons.evaicons.outline.Home
 import com.luisdev.antsimulator.domain.BottomBarItem
 import org.itb.nominas.core.navigation.HomeRoute
-import com.luisdev.antsimulator.core.utils.MainViewModel
+import compose.icons.evaicons.outline.Info
 import compose.icons.evaicons.outline.Settings
 import kotlinx.coroutines.launch
 
@@ -40,10 +45,21 @@ fun MainBottomBar(
     navController: NavHostController,
     isHomeSelected: Boolean,
     drawerState: DrawerState,
+    mainViewModel: MainViewModel
 ) {
     val scope = rememberCoroutineScope()
+    val showAbout by mainViewModel.showAbout.collectAsState(true)
 
-    val navigationIcons = listOf<BottomBarItem>(
+    AboutBottomSheet(showAbout, { mainViewModel.setShowAbout(false) })
+
+    val navigationIcons = listOf(
+        BottomBarItem(
+            onclick = { mainViewModel.setShowAbout(true) },
+            label = "Info",
+            icon = EvaIcons.Outline.Info,
+            color = MaterialTheme.colorScheme.secondary,
+            style = MaterialTheme.typography.labelSmall
+        ),
         BottomBarItem(
             onclick = { navController.navigate(HomeRoute) },
             label = "Inicio",
@@ -58,7 +74,7 @@ fun MainBottomBar(
             icon = EvaIcons.Outline.Settings,
             color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.labelSmall
-        ),
+        )
     )
 
     Surface (

@@ -26,7 +26,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ant_simulator.composeapp.generated.resources.Res
 import ant_simulator.composeapp.generated.resources.logo
+import com.luisdev.antsimulator.core.ui.components.AboutBottomSheet
 import com.luisdev.antsimulator.core.utils.MainViewModel
 import com.luisdev.antsimulator.core.utils.getTheme
 import com.luisdev.antsimulator.domain.MainDrawerItem
@@ -42,6 +46,8 @@ import compose.icons.EvaIcons
 import compose.icons.evaicons.Outline
 import compose.icons.evaicons.outline.ChevronRight
 import compose.icons.evaicons.outline.Close
+import compose.icons.evaicons.outline.File
+import compose.icons.evaicons.outline.Info
 import compose.icons.evaicons.outline.Moon
 import compose.icons.evaicons.outline.Text
 import kotlinx.coroutines.launch
@@ -55,12 +61,17 @@ fun MyDrawerContent(
 ) {
     val scope = rememberCoroutineScope()
     val selectedTheme by mainViewModel.selectedTheme.collectAsState(null)
+    var showAbout by remember { mutableStateOf(false) }
 
     val items = buildList {
         add(MainDrawerItem("Tema", selectedTheme?.getTheme()?.icon ?: EvaIcons.Outline.Moon) { mainViewModel.setBottomSheetTheme(true) })
-        add(MainDrawerItem("Tamaño de letra", EvaIcons.Outline.Text) { mainViewModel.setBottomSheetFontSize(true) })
-        add(MainDrawerItem("Quitar anuncios", EvaIcons.Outline.Close) {  })
+        add(MainDrawerItem("Tamaño de Letra", EvaIcons.Outline.Text) { mainViewModel.setBottomSheetFontSize(true) })
+        add(MainDrawerItem("Quitar Anuncios", EvaIcons.Outline.Close) {  })
+        add(MainDrawerItem("Politica de Privacidad", EvaIcons.Outline.File) { mainViewModel.urlOpener.openURL("https://luis-gomez-91.github.io/ant-simulator-admin/privacy_policy.html") })
+        add(MainDrawerItem("Acerca de esta app", EvaIcons.Outline.Info) { showAbout = true })
     }
+
+    AboutBottomSheet(showAbout, { showAbout = false })
 
     ModalDrawerSheet(
         modifier = Modifier

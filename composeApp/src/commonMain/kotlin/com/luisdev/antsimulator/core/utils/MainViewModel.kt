@@ -33,6 +33,13 @@ class MainViewModel(
     private val _isStarred = MutableStateFlow<Boolean>(false)
     val isStarred: StateFlow<Boolean> = _isStarred
 
+    private val _showAbout = MutableStateFlow<Boolean>(true)
+    val showAbout: StateFlow<Boolean> = _showAbout
+
+    fun setShowAbout(value: Boolean) {
+        _showAbout.value = value
+    }
+
     fun setIsStarred(value: Boolean) {
         _isStarred.value = value
     }

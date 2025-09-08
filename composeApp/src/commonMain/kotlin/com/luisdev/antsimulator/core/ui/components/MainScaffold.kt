@@ -70,7 +70,7 @@ fun MainScaffold(
                         MainTopBar(mainViewModel, navController)
                     }
                 },
-                bottomBar = { MainBottomBar(navController, isHomeSelected, drawerState) }
+                bottomBar = { MainBottomBar(navController, isHomeSelected, drawerState, mainViewModel) }
             ) { innerPadding ->
                 Surface(
                     Modifier

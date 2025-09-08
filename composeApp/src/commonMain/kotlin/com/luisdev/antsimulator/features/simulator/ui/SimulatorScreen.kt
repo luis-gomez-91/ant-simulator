@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import app.lexilabs.basic.ads.AdState
 import app.lexilabs.basic.ads.DependsOnGoogleMobileAds
+import app.lexilabs.basic.ads.composable.BannerAd
 import app.lexilabs.basic.ads.composable.InterstitialAd
 import app.lexilabs.basic.ads.composable.rememberInterstitialAd
 import coil3.compose.AsyncImage
@@ -145,37 +146,41 @@ fun Screen(
 
             Spacer(Modifier.height(8.dp))
 
-            Row (
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                MyFilledTonalButton(
-                    text = "",
-                    icon = EvaIcons.Outline.ChevronLeft,
-                    enabled = uiState.currentQuestionIndex != 0,
-                    onClickAction = { simulatorViewModel.selectQuestionByIndex(uiState.currentQuestionIndex - 1) },
-                    iconSize = 28.dp
-                )
+            Column {
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    MyFilledTonalButton(
+                        text = "",
+                        icon = EvaIcons.Outline.ChevronLeft,
+                        enabled = uiState.currentQuestionIndex != 0,
+                        onClickAction = { simulatorViewModel.selectQuestionByIndex(uiState.currentQuestionIndex - 1) },
+                        iconSize = 28.dp
+                    )
 
-                MyFilledTonalButton(
-                    text = "Finalizar",
-//                    enabled = uiState.allQuestionsAnswered && !uiState.isFinished,
+                    MyFilledTonalButton(
+                        text = "Finalizar",
+                        enabled = uiState.allQuestionsAnswered && !uiState.isFinished && interstitialAd.state == AdState.READY,
 //                    onClickAction = {simulatorViewModel.finalizeSimulationManually()},
-                    onClickAction = { showInterstitialAd = true },
-                    enabled = interstitialAd.state == AdState.READY,
-                    modifier = Modifier.fillMaxWidth().weight(1f),
-                    textStyle = MaterialTheme.typography.titleLarge
-                )
+                        onClickAction = { showInterstitialAd = true },
+                        modifier = Modifier.fillMaxWidth().weight(1f),
+                        textStyle = MaterialTheme.typography.titleLarge
+                    )
 
-                MyFilledTonalButton(
-                    text = "",
-                    icon = EvaIcons.Outline.ChevronRight,
-                    enabled = uiState.currentQuestionIndex != 19,
-                    onClickAction = { simulatorViewModel.selectQuestionByIndex(uiState.currentQuestionIndex + 1) },
-                    iconSize = 28.dp
-                )
+                    MyFilledTonalButton(
+                        text = "",
+                        icon = EvaIcons.Outline.ChevronRight,
+                        enabled = uiState.currentQuestionIndex != 19,
+                        onClickAction = { simulatorViewModel.selectQuestionByIndex(uiState.currentQuestionIndex + 1) },
+                        iconSize = 28.dp
+                    )
+                }
+
+                Spacer(Modifier.height(4.dp))
+                BannerAd()
             }
         }
 

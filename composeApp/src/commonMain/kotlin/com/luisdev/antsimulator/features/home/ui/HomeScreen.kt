@@ -70,7 +70,7 @@ fun HomeScreen(
     )
 }
 
-@OptIn(KoinExperimentalAPI::class, ExperimentalSharedTransitionApi::class,
+@OptIn(ExperimentalSharedTransitionApi::class,
     DependsOnGoogleMobileAds::class
 )
 @Composable
